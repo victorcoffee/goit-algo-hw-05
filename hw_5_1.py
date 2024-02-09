@@ -7,7 +7,7 @@ os.system("cls")
 
 # Функція обчислення заданого числа Фібоначчі з кешуванням
 def caching_fibonacci(n: int) -> int:
-    cach = {}
+    cache = {}
 
     # Рекурсивна функція з кешуванням
     def fibonacci(n: int) -> int:
@@ -15,10 +15,11 @@ def caching_fibonacci(n: int) -> int:
             return 0
         elif n == 1:
             return 1
-        elif n in cach:
-            return cach[n]
+        elif n in cache:
+            return cache[n]
         else:
-            return fibonacci(n - 2) + fibonacci(n - 1)
+            cache[n]= fibonacci(n - 2) + fibonacci(n - 1)
+            return cache[n]
 
     return fibonacci
 
