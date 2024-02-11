@@ -1,4 +1,5 @@
 # Модуль 5. Завдання 3
+
 import os
 import sys
 import collections
@@ -9,14 +10,15 @@ from collections import defaultdict
 def main():
     os.system("cls")
 
-    # Параметри запуску з командного рядка
+    # Варіанти запуску з командного рядка
     # Командний рядок 1: python hw_5_3.py logfile.log
     # Командний рядок 2: python hw_5_3.py logfile.log error
     # Командний рядок 3: python hw_5_3.py bad_logfile.log error
 
     file_path = sys.argv[1]
     logs = load_logs(file_path)  # Завантаження логів з файлу "logfile.log"
-    print("Аналізуємо: \n", file_path)
+    print("Аналізуємо: ", file_path)
+    print()
 
     counts = count_logs_by_level(logs)
     display_log_counts(counts)
@@ -47,12 +49,16 @@ def load_logs(file_path: str) -> list:
     except FileNotFoundError:
         print("Помилка: файл не знайдено")
 
+    except PermissionError:
+        print("Помилка: в доступі до файлу відмовлено")
+
     except Exception as e:
-        print(f"Помилка {e}")
+        print(f"Помилка: {e}")
 
     return new_lines
 
 
+# Функція парсінгу логів
 def parse_log_line(line: str) -> dict:
 
     dict = {}
@@ -62,6 +68,9 @@ def parse_log_line(line: str) -> dict:
     dict["time"] = words[1]
     dict["level"] = words[2]
     dict["message"] = words[3].strip()
+
+    # Варіант парсінгу з перевіркою коректності логів
+    # Поки не реалізовано
 
     return dict
 
@@ -79,13 +88,9 @@ def filter_logs_by_level(logs: list, level: str) -> list:
     # Варіант через List Comprehesion. Працює
     filtered_logs = [log for log in logs if log["level"] == level]
 
+    # Варіант з filter і lambda
     # Не працює повертає <filter object at 0x000002BBB4DF3BB0>
     # filtered_logs = filter(lambda log: log["level"] == level, logs)
-
-    # Не працює, помилки
-    # filtered_logs = filter(is_level(logs, level), logs)
-
-    # print(filtered_logs)
 
     return filtered_logs
 
