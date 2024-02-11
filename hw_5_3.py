@@ -6,30 +6,31 @@ from pathlib import Path
 from collections import defaultdict
 
 
-def main(*args, **kwargs):
+def main():
     os.system("cls")
 
-    # # Командний рядок 1: python hw_5_3.py logfile.log
-    # # Командний рядок 2: python hw_5_3.py logfile.log error
-    # # Командний рядок ?: python main.py logfile.log error
+    # Параметри запуску з командного рядка
+    # Командний рядок 1: python hw_5_3.py logfile.log
+    # Командний рядок 2: python hw_5_3.py logfile.log error
+    # Командний рядок 3: python hw_5_3.py bad_logfile.log error
 
     file_path = sys.argv[1]
-    print("file_path:", file_path)
     logs = load_logs(file_path)  # Завантаження логів з файлу "logfile.log"
-    # print("logs:", logs)
+    print("Аналізуємо: \n", file_path)
 
-    counter = count_logs_by_level(logs)
-    print(counter)
+    counts = count_logs_by_level(logs)
+    display_log_counts(counts)
 
-    # Якщо є 2 параметр
+    # Якщо є 2 параметр рядка виведення детально по рівню
     if len(sys.argv) > 2:
         level = sys.argv[2]
         level = level.upper()
-        print("level:", level)
+        print(f"\nДеталі логів для рівня '{level}':")
         filtered_logs = filter_logs_by_level(logs, level)
-        print("filtered_logs:", filtered_logs)
+        for log in filtered_logs:
+            print(f"{log['date']} {log['time']} - {log['message']}")
 
-    print("Програма завершена")
+    print("\nПрограма завершена")
 
 
 def load_logs(file_path: str) -> list:
@@ -42,11 +43,9 @@ def load_logs(file_path: str) -> list:
             for line in lines:
                 parse_line = parse_log_line(line)
                 new_lines.append(parse_line)
-                # new_line = " ".join(parse_line.values())
-                # print(new_line)
 
     except FileNotFoundError:
-        print("Помилка File Not Found")
+        print("Помилка: файл не знайдено")
 
     except Exception as e:
         print(f"Помилка {e}")
@@ -67,69 +66,53 @@ def parse_log_line(line: str) -> dict:
     return dict
 
 
+# Не використовується
 def is_level(log: dict, level: str) -> bool:
     print(log["level"] == level)
     return log["level"] == level
 
 
-# В роботі
-# Командний рядок 2: python hw_5_3.py logfile.log error
+# Працює тільки через list comprehensions або через цикл
 def filter_logs_by_level(logs: list, level: str) -> list:
     filtered_logs = []
-
-    # Варіант через цикл. Працює
-    # for log in logs:
-    #     if log["level"] == level:
-    #         filtered_logs.append(log)
 
     # Варіант через List Comprehesion. Працює
     filtered_logs = [log for log in logs if log["level"] == level]
 
-    # Не працює <filter object at 0x000002BBB4DF3BB0>
+    # Не працює повертає <filter object at 0x000002BBB4DF3BB0>
     # filtered_logs = filter(lambda log: log["level"] == level, logs)
 
-    # Не працює
+    # Не працює, помилки
     # filtered_logs = filter(is_level(logs, level), logs)
 
-    print(filtered_logs)
+    # print(filtered_logs)
 
     return filtered_logs
 
 
-# Працюючий варіант. Прибрати зайвий код і debugging code
-# Командний рядок 2: python hw_5_3.py logfile.log error
-
-
+# Функція для підрахунку записів за рівнем логування
 def count_logs_by_level(logs: list) -> dict:
     levels = []
     dict = defaultdict(str)
-    count_log = 0
-    # count_log_info = 0
 
+    # Створення словника з логів за ключами-рівнями
     for log in logs:
-        count_log += 1
         dict[log["level"]] = log
         levels.append(log["level"])
 
-        # if log["level"] == "INFO":
-        #     count_log_info += 1
-        #     print("log:", count_log_info, log)
-
-    # Debugging code
-
-    # print("dict.keys:", dict.keys())
-    # print("levels:", levels)
-    # print("count_log:", count_log)
-    # print("count_log_info:", count_log_info)
-
     group_level = collections.Counter(levels)
-    # print(group_level)
 
     return group_level
 
 
+# Функція для виведення результатів
 def display_log_counts(counts: dict):
-    pass
+    print("Рівень логування | Кількість")
+    print("-----------------|----------")
+    for key, value in counts.items():
+        print(f"{key:16} | {value:5}")
+
+    return
 
 
 if __name__ == "__main__":
