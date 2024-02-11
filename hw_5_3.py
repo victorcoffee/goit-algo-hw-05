@@ -75,12 +75,6 @@ def parse_log_line(line: str) -> dict:
     return dict
 
 
-# Не використовується
-def is_level(log: dict, level: str) -> bool:
-    print(log["level"] == level)
-    return log["level"] == level
-
-
 # Функція фільтрації логів за рівнем
 def filter_logs_by_level(logs: list, level: str) -> list:
     filtered_logs = []
