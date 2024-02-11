@@ -59,7 +59,6 @@ def show_phone(args, contacts):
 #  Виведення всіх контаків
 @input_error
 def show_all(contacts):
-    # print(*contacts)
     for name, phone in contacts.items():
         print(f"{name} {phone}")
 

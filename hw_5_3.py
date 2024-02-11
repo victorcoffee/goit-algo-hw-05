@@ -81,16 +81,15 @@ def is_level(log: dict, level: str) -> bool:
     return log["level"] == level
 
 
-# Працює тільки через list comprehensions або через цикл
+# Функція фільтрації логів за рівнем
 def filter_logs_by_level(logs: list, level: str) -> list:
     filtered_logs = []
 
-    # Варіант через List Comprehesion. Працює
-    filtered_logs = [log for log in logs if log["level"] == level]
+    # Варіант з List Comprehesion
+    # filtered_logs = [log for log in logs if log["level"] == level]
 
     # Варіант з filter і lambda
-    # Не працює повертає <filter object at 0x000002BBB4DF3BB0>
-    # filtered_logs = filter(lambda log: log["level"] == level, logs)
+    filtered_logs = list(filter(lambda log: log["level"] == level, logs))
 
     return filtered_logs
 
